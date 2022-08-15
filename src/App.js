@@ -28,28 +28,32 @@ class App extends React.Component {
 		this.state = {
 			input: '',
 			imageUrl: '',
-			box: {},
+			boxes: [],
 			route: 'signin',
 			isSignedIn: false,
 		};
 	}
 
 	calculateFaceLocation = data => {
-		const clarifaiFace =
-			data.outputs[0].data.regions[0].region_info.bounding_box;
+		const clarifaiFaces = data.outputs[0].data.regions.map(
+			region => region.region_info.bounding_box
+		);
 		const image = document.getElementById('inputimage');
 		const width = Number(image.width);
 		const height = Number(image.height);
-		return {
-			leftCol: clarifaiFace.left_col * width,
-			topRow: clarifaiFace.top_row * height,
-			rightCol: width - clarifaiFace.right_col * width,
-			bottomRow: height - clarifaiFace.bottom_row * height,
-		};
+
+		console.log(clarifaiFaces);
+
+		return clarifaiFaces.map(faceLocation => ({
+			leftCol: faceLocation.left_col * width,
+			topRow: faceLocation.top_row * height,
+			rightCol: width - faceLocation.right_col * width,
+			bottomRow: height - faceLocation.bottom_row * height,
+		}));
 	};
 
-	displayFaceBox = box => {
-		this.setState({ box: box });
+	displayFaceBox = boxes => {
+		this.setState({ boxes: boxes });
 	};
 
 	onInputChange = event => {
@@ -98,7 +102,7 @@ class App extends React.Component {
 	};
 
 	render() {
-		const { isSignedIn, route, imageUrl, box } = this.state;
+		const { isSignedIn, route, imageUrl, boxes } = this.state;
 
 		return (
 			<div className='App'>
@@ -115,7 +119,7 @@ class App extends React.Component {
 							onInputChange={this.onInputChange}
 							onButtonSubmit={this.onButtonSubmit}
 						/>
-						<FaceRecognition box={box} imageUrl={imageUrl} />
+						<FaceRecognition boxes={boxes} imageUrl={imageUrl} />
 					</>
 				) : route === 'signin' ? (
 					<Signin onRouteChange={this.onRouteChange} />
