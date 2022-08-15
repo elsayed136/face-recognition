@@ -7,6 +7,8 @@ import Logo from './components/Logo/Logo';
 import Navigation from './components/Navigation/Navigation';
 import Particle from './components/Particle/Particle';
 import Rank from './components/Rank/Rank';
+import Register from './components/Register/Register';
+import Signin from './components/Signin/Signin';
 
 // const app = new Clarifai.App({
 // 	apiKey: '91abc3eca8924846bdb35175e83768ca',
@@ -27,6 +29,8 @@ class App extends React.Component {
 			input: '',
 			imageUrl: '',
 			box: {},
+			route: 'signin',
+			isSignedIn: false,
 		};
 	}
 
@@ -84,20 +88,43 @@ class App extends React.Component {
 			.catch(error => console.log('error', error));
 	};
 
+	onRouteChange = route => {
+		if (route === 'signout') {
+			this.setState({ isSignedIn: false });
+		} else if (route === 'home') {
+			this.setState({ isSignedIn: true });
+		}
+		this.setState({ route: route });
+	};
+
 	render() {
-		const { imageUrl, box } = this.state;
+		const { isSignedIn, route, imageUrl, box } = this.state;
 
 		return (
 			<div className='App'>
 				<Particle />
-				<Navigation />
-				<Logo />
-				<Rank name='Elsayed' entries={1} />
-				<ImageLinkForm
-					onInputChange={this.onInputChange}
-					onButtonSubmit={this.onButtonSubmit}
+				<Navigation
+					isSignedIn={isSignedIn}
+					onRouteChange={this.onRouteChange}
 				/>
-				<FaceRecognition box={box} imageUrl={imageUrl} />
+				{route === 'home' ? (
+					<>
+						<Logo />
+						<Rank name='Elsayed' entries={1} />
+						<ImageLinkForm
+							onInputChange={this.onInputChange}
+							onButtonSubmit={this.onButtonSubmit}
+						/>
+						<FaceRecognition box={box} imageUrl={imageUrl} />
+					</>
+				) : route === 'signin' ? (
+					<Signin onRouteChange={this.onRouteChange} />
+				) : (
+					<Register
+						loadUser={this.loadUser}
+						onRouteChange={this.onRouteChange}
+					/>
+				)}
 			</div>
 		);
 	}
