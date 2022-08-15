@@ -1,4 +1,3 @@
-import Clarifai from 'clarifai';
 import React from 'react';
 import './App.css';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
@@ -10,14 +9,7 @@ import Rank from './components/Rank/Rank';
 import Register from './components/Register/Register';
 import Signin from './components/Signin/Signin';
 
-// const app = new Clarifai.App({
-// 	apiKey: '91abc3eca8924846bdb35175e83768ca',
-// });
-
-const USER_ID = 'YOUR_USER_ID_HERE';
-// Your PAT (Personal Access Token) can be found in the portal under Authentification
-const PAT = '91abc3eca8924846bdb35175e83768ca';
-const APP_ID = 'YOUR_APP_ID_HERE';
+const API_KEY = '91abc3eca8924846bdb35175e83768ca';
 // Change these to whatever model and image URL you want to use
 const MODEL_ID = 'face-detection';
 const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
@@ -78,7 +70,7 @@ class App extends React.Component {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
-				Authorization: 'Key ' + PAT,
+				Authorization: 'Key ' + API_KEY,
 			},
 			body: raw,
 		};
